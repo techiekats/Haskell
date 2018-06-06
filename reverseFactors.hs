@@ -15,7 +15,9 @@ isFactor n f = if (mod n f == 0) then True else False
 
 factors xs n =  if (n== 1 || xs == []) then [] 
                 else if (mod n (head xs) == 0) then (head xs) : (factors xs (quot n (head xs)))
-                else factors (tail xs) n
+                else factors (tail xs) n          
+
+generateStates seed xs = if (xs == []) then [] else (seed * (head xs)) : (generateStates (seed * (head xs)) (tail xs) )                
 
 main :: IO()
 main = do
@@ -28,7 +30,7 @@ main = do
     let factorSet = reverse $ sort $ filter (isFactor n) set
     let reducedFactors = factors factorSet n
     let checkProd = if ((foldl (*) 1 reducedFactors) == n ) then True else False
-    let result = if (checkProd == False) then [-1] else reverse reducedFactors
-    let l = length result
-    mapM_ (print . show) result
+    let result = if (checkProd == False) then [-1] else generateStates 1 ([1]++(reverse reducedFactors))
+    let stringResult = intercalate " " $ Data.List.map (\x -> show x) $ result
+    putStrLn stringResult
         
