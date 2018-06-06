@@ -11,6 +11,12 @@ import System.IO
 
 parseInt x = read x :: Integer
 
+isFactor n f = if (mod n f == 0) then True else False
+
+factors xs n =  if (n== 1 || xs == []) then [] 
+                else if (mod n (head xs) == 0) then (head xs) : (factors xs (quot n (head xs)))
+                else factors (tail xs) n
+
 main :: IO()
 main = do
     input <- getLine
@@ -19,7 +25,10 @@ main = do
     let q = read (inputSplit !! 1) :: Integer
     setTemp <- getLine
     let set = map (parseInt) (words setTemp)
-    print (length set)
-    -- forM_ [1..q] $ \qItr -> do
-    --     a <- readLn :: IO Integer
-    --     print a
+    let factorSet = reverse $ sort $ filter (isFactor n) set
+    let reducedFactors = factors factorSet n
+    let checkProd = if ((foldl (*) 1 reducedFactors) == n ) then True else False
+    let result = if (checkProd == False) then [-1] else reverse reducedFactors
+    let l = length result
+    mapM_ (print . show) result
+        
